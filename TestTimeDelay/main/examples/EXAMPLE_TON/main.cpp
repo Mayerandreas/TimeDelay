@@ -46,7 +46,7 @@ extern "C" void app_main(void)
 
 
     TON TON1;
-    TON1.PT = 1000;
+    TON1.PT = 2500;
 
     while (true) // Endlos-Schleife
     {
