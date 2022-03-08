@@ -22,7 +22,6 @@ static const char * const TAG = "EXAMPLE_TON";
 
 
 #define BUTTON_I1 GPIO_NUM_26        // Pin 26.
-#define BUTTON_I2 GPIO_NUM_32        // Pin 32.
 #define GPIO_Q1 GPIO_NUM_19            // Pin 19.
 
 
@@ -42,33 +41,34 @@ extern "C" void app_main(void)
     */
     gpio_reset_pin(GPIO_Q1);
     gpio_reset_pin(BUTTON_I1);
-    gpio_reset_pin(BUTTON_I2);
     /* Set the GPIO as a push/pull output */
     gpio_set_direction(GPIO_Q1, GPIO_MODE_OUTPUT);
     gpio_set_direction(BUTTON_I1, GPIO_MODE_INPUT);
-    gpio_set_direction(BUTTON_I2, GPIO_MODE_INPUT);
     gpio_set_level(GPIO_Q1, 0); //set to 0 at Reset.
 
 
     TON TON1;
     TON1.PT = 1000;
 
-    TOGGLE TOGGLE1;
+    RS RS1;
+    R_TRIG R_TRIG1;
 
     while (true) // Endlos-Schleife
     {
         // Eingang lesen, das not wird gebraucht weil die Eingaenge bei losgelassenem Taster auf 3.3V sind, und der Taster auf GND schaltet.
         bool I1 = not gpio_get_level(BUTTON_I1);
-        bool I2 = not gpio_get_level(BUTTON_I2);
+
 
         // den I1 an TON1 uebergeben, und TON1 aufrufen
         TON1(I1);
 
-        TOGGLE1.RST = I2;
-        TOGGLE1(TON1.Q);
+        R_TRIG1(I1);
+
+
+        RS1(TON1.Q, R_TRIG1.Q);
 
         // Ausgaenge setzen
-        gpio_set_level(GPIO_Q1, TOGGLE1.Q);
+        gpio_set_level(GPIO_Q1, RS1.Q1);
 
         // 100ms warten  = Intervallzeit des Tasks
         vTaskDelay(100 / portTICK_PERIOD_MS); // 100ms cycle for Test.
